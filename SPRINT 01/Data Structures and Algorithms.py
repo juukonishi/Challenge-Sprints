@@ -132,68 +132,108 @@ if reserva == "s":
         print('Crédito insuficiente!')
         tempo_reserva = 0
 
-# CHECK-IN (GPS SIMULADO)
+#RFID ou APP
+print('\nAproxime o dispositivo...')
 
-print('\nVerificando localização...')
+rfids_validos = ["1234", "ABCD", "USER01"]
 
-local_posto = 10
-local_usuario = random.randint(0, 20)
+print('\nEscolha como iniciar a sua sessão:')
+print('1 - Cartão RFID')
+print('2 - App (conexão do celular no aparelho')
 
-distancia = abs(local_usuario - local_posto)
+modo = input('Opção: ')
 
-print(f'Local do posto: {local_posto}')
-print(f'Local usuário: {local_usuario}')
-print(f'Distância: {distancia}')
+presente = False
 
-presente = distancia <= 2
+if modo == "1":
+    codigo = input('Aproxime o seu cartão RFID: ')
 
-if presente:
-    print('Check-in confirmado!')
+    if codigo in rfids_validos:
+        presente =  True
+        print('RFID validado')
+    else:
+        print('RFID Inválido!')
+
+elif modo == "2":
+    conectado = input('Cabo conectado ao veículo? (s/n): ').lower()
+
+    if conectado == 's':
+        presente = True
+        print('App detectou conexão - sessão iniciada')
+    else:
+        print('Veículo não conectado!')
+
 else:
-    print('Usuário não compareceu!')
+    print('Opção Inválida!')
+
 
 #NO-SHOW
+if not presente:
+    print('\n' + '=' * 30)
+    print('ALERTA: USUÁRIO NÃO COMPARECEU')
+    print(f'A reserva de R$ {valor_reserva:.2f} não será estornada.')
+    print(f'Crédito atual em conta: R$ {credito:.2f}')
+    print('=' * 30)
+else:
+    print('\n' + '-' * 30)
+    print('CHECK-IN REALIZADO: Iniciando recarga')
+    print('-' * 30)
 
-if reserva == "s" and not presente:
-    multa = valor_reserva / 2
-    credito -= multa
+    #SIMULAÇÃO COM OS DADOS DO CARREGADOR
 
-    print('\nNO-SHOW (RESERVA NÃO UTILIZADA)')
-    print(f'Multa: R$ {multa:.2f}')
-    print(f'Crédito atual: R$ {credito:.2f}')
+    tensao = 380
+    corrente = 32
+    fator_trifasico = 1.73
 
-elif reserva == "s" and presente:
-    print('\nReserva utilizada com sucesso')
+    potencia_carregador = (tensao * corrente * fator_trifasico) / 1000
 
-#RECARGA
+    #LIMITE DO CARRO
+    potencia_carro = 22
 
-elif presente:
+    #LIMITADOR DE REDE
+    potencia_total_rede = 100 #kW total do estabelecimento
+    consumo_atual = 80 #kW ja em uso
 
-    print('\nINICIANDO RECARGA')
+    potencia_rede_disponivel = potencia_total_rede - consumo_atual
 
-    tempo = int(input('Tempo de recarga (min): '))
+    #LIMITADOR FINAL
+    potencia_real = min(
+        potencia_carregador,
+        potencia_carro,
+        potencia_rede_disponivel
+    )
 
-    energia = 0
-    potencia_carro = 10
+    print(f'\nPotência disponível em rede: {potencia_rede_disponivel} kW')
+    print(f'Potência do carregador: {round(potencia_carregador, 2)} kW')
+    print(f'Limite do carro: {potencia_carro} kW')
+    print(f'Potência final utilizada: {round(potencia_real, 2)} kW')
 
-    for _ in range(tempo):
-        potencia_real = min(potencia_carro, potencia_max)
-        energia += potencia_real / 60
+    #SIMULAÇÃO
+    if presente:
+        print('\nIniciando recarga')
 
-    preco_kwh = 1.8
-    valor = energia * preco_kwh
-    credito -= valor
+        tempo = tempo_reserva
+        energia = 0
 
-    print("\n========== RELATÓRIO FINAL ==========")
-    print(f"Plano: {nome_plano}")
-    print(f"Região: {nome_regiao}")
-    print(f"Local: {nome_local}")
-    print(f"Energia consumida: {round(energia, 2)} kWh")
-    print(f"Valor recarga: R$ {round(valor, 2)}")
-    print(f"Crédito restante: R$ {round(credito, 2)}")
-    print("=====================================")
+        print("\nAPP - MONITORAMENTO")
 
-    if credito < 0:
-        print("⚠️ Saldo negativo")
-    else:
-        print("✅ Sessão concluída")
+        for minuto in range(tempo):
+
+            energia += potencia_real / 60
+            progresso = ((minuto + 1) / tempo) * 100
+
+            print(f'\nMinuto {minuto+1}')
+            print(f'Potência : {round(potencia_real, 2)} kW')
+            print(f'Energia: {round(energia, 2)} kW')
+            print(f'Progresso: {round(progresso, 1)} %')
+
+        preco = 1.8
+        valor = energia * preco
+
+        print("\n========== RELATÓRIO FINAL ==========")
+        print(f"Plano: {nome_plano}")
+        print(f"Local: {nome_local} - {nome_regiao}")
+        print(f"Energia: {round(energia, 2)} kWh")
+        print(f"Custo estimado: R$ {round(valor, 2)}")
+        print(f"Crédito restante: R$ {round(credito, 2)}")
+        print("=====================================")
