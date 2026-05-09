@@ -1,8 +1,6 @@
 #SISTEMA DE RECARGA INTELIGENTE
 #Possui: Plano + Credito; Reserva de vaga; No-show; Check-in por localização; Controle de energia (Limitador de kW); Relatório final
 
-import random
-
 print('=== SISTEMA DE RECARGA INTELIGENTE ===')
 
 #PLANO
