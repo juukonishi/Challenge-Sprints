@@ -1,28 +1,33 @@
-; ==========================================
 ; EcoCharge - Controle Inteligente de Potência
-; Simulação de gerenciamento energético
-; em eletropostos utilizando Assembly
-; ==========================================
+; Gerenciamento energético para eletropostos
 
-; R0 = limite máximo da rede elétrica
-; R1 = consumo atual da rede
+; R0 = limite máximo da rede (kW)
+; R1 = consumo atual
 ; R2 = endereço do sensor
-; R3 = status do controle de carga
+; R3 = status do carregador
+; R4 = potência liberada
 
 START:
 
-MOV R0, #100        ; define limite da rede (100 kW)
+MOV R0, #100        ; limite máximo da rede
 
-LDR R1, [R2]        ; lê consumo atual do sensor
+LDR R1, [R2]        ; leitura do sensor
 
-CMP R1, R0          ; compara consumo com limite
+CMP R1, R0          ; consumo passou do limite?
 
-BGT REDUZ_CARGA     ; se consumo > limite, reduz carga
+BGT REDUZ_CARGA     ; se sim, reduz potência
 
-B CONTINUA          ; continua operação normal
+; operação normal
+MOV R3, #0          ; carregamento normal
+MOV R4, #22         ; libera até 22 kW
+
+B CONTINUA
 
 REDUZ_CARGA:
-MOV R3, #1          ; ativa modo de redução de potência
+
+MOV R3, #1          ; ativa controle de potência
+MOV R4, #7          ; reduz carregamento
 
 CONTINUA:
-NOP                 ; mantém sistema em execução
+
+NOP                 ; sistema permanece monitorando
