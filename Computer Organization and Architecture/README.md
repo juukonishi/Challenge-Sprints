@@ -1,13 +1,5 @@
 # EcoCharge - Sistema Inteligente de Gerenciamento Energético para Eletropostos
 
-## Integrantes
-
-Júlia Konishi - 569506
-Alexandre Rizzi - 569621
-Miguel Putini - 571624
-João Vitor Giadans - 571608
-João Victor Scheren - 568883
-
 ---
 
 # Sobre o Projeto
