@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 print("\nCarregando base de dados dos eletropostos...\n")
 
-df = pd.read_excel("base_ev.csv.xlsx")
+df = pd.read_excel("base_ev.xlsx")
 
 print("Base carregada com sucesso!\n")
 
