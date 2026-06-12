@@ -153,15 +153,6 @@ O controle inteligente evita consumo excessivo e distribui potência de forma eq
 ### Melhorar a eficiência energética
 A gestão de demanda reduz picos de energia e melhora a estabilidade da rede elétrica.
 
-### Preparar a infraestrutura para energias renováveis
-Como a proposta está alinhada ao ecossistema **GoodWe**, existe potencial para integração futura com:
-
-☀️ energia solar fotovoltaica  
-🔋 sistemas de armazenamento energético  
-⚡ gerenciamento inteligente da energia
-
-Ou seja, pensamos em uma solução preparada para um futuro mais sustentável.
-
 ---
 
 ## 🛠️ Tecnologias Utilizadas
